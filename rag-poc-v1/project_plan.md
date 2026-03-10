@@ -157,6 +157,28 @@ One function/team: **Legal / Contracts** (best-quality documents; easiest win)
 - [ ] Document known limitations
 **Definition of Done:** Repeatable demo runs smoothly; Simple retrieval accuracy metrics can be shown.
 
+### M8.1 — Corpus expansion (EDGAR contracts) + eval compare (baseline vs rerank)
+**Goal:** Grow corpus fast with real contracts and measure retrieval improvements with/without reranker.
+
+**Dataset (tested source):**
+- Hugging Face dataset: `chenghao/sec-material-contracts-qa` (800+ EDGAR contracts with PDF images + extracted fields).  [oai_citation:2‡huggingface.co](https://huggingface.co/datasets/chenghao/sec-material-contracts-qa?utm_source=chatgpt.com)
+
+**Steps:**
+- [ ] Download a small, deterministic subset of PDFs into `data/contracts/` (e.g., first 20 items or a pinned list)
+- [ ] Run pipeline: ingest → chunk → embed
+- [ ] Run M8 eval twice and save reports:
+  - baseline: `RERANK_ENABLED=false`
+  - rerank: `RERANK_ENABLED=true`
+- [ ] Compare:
+  - pass_rate delta
+  - failures list delta
+  - best_match_rank shifts (where available)
+
+**Definition of Done:**
+- At least 10 PDFs added to corpus
+- Two reports exist side-by-side: `eval_report_baseline.json` and `eval_report_rerank.json`
+- README documents exact commands to reproduce the run
+
 ## 6) Repo structure
 ```text
 rag-poc-v1/

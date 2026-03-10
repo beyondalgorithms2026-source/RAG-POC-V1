@@ -59,7 +59,7 @@ def update_chunk_embeddings(chunk_embeddings: List[tuple[int, list[float]]]):
     if not chunk_embeddings:
         return
 
-    sql = text("UPDATE chunks SET embedding = :embedding::vector WHERE id = :chunk_id")
+    sql = text("UPDATE chunks SET embedding = CAST(:embedding AS vector) WHERE id = :chunk_id")
 
     with engine.begin() as conn:
         for chunk_id, embedding_vector in chunk_embeddings:
