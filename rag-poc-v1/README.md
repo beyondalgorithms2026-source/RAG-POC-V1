@@ -58,3 +58,35 @@ To run the standalone retrieval evaluation harness (which validates vector searc
    ```
 
 A detailed JSON report highlighting failures and pass rates will be saved to `eval_report.json` in the project root.
+
+## M11 Evaluation Expansion
+
+To run the expanded evaluation with 40 questions in the different retrieval modes:
+
+```bash
+cd backend
+source venv/bin/activate
+
+HYBRID_ENABLED=false python -m app.eval.retrieval_eval --mode vector --k 6
+python -m app.eval.retrieval_eval --mode keyword --k 6
+python -m app.eval.retrieval_eval --mode hybrid --k 6
+```
+
+## M12 Baseline vs Reranker Compare
+
+```bash
+cd backend
+source venv/bin/activate
+
+# Hybrid baseline (reranker OFF) then reranked (ON)
+RERANK_ENABLED=false python -m app.eval.retrieval_eval --mode hybrid --k 6
+cp ../eval_report_hybrid.json ../eval_report_hybrid_baseline.json
+RERANK_ENABLED=true python -m app.eval.retrieval_eval --mode hybrid --k 6
+cp ../eval_report_hybrid.json ../eval_report_hybrid_rerank.json
+
+# Vector baseline (reranker OFF) then reranked (ON)
+RERANK_ENABLED=false python -m app.eval.retrieval_eval --mode vector --k 6
+cp ../eval_report_vector.json ../eval_report_vector_baseline.json
+RERANK_ENABLED=true python -m app.eval.retrieval_eval --mode vector --k 6
+cp ../eval_report_vector.json ../eval_report_vector_rerank.json
+```
