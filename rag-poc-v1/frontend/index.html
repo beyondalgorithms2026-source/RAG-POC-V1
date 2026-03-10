@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG PoC v1</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            margin: 0;
+            padding: 2rem;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .controls-panel {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .question-box {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button.secondary {
+            background-color: var(--surface);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .response-area {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-height: 200px;
+        }
+
+        .meta-state {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .error-text {
+            color: #dc2626;
+            background: #fef2f2;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #f87171;
+            margin-bottom: 1rem;
+        }
+
+        .answer-block {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .citation-card {
+            background: #f1f5f9;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .citation-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .citation-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        
+        .section-path-badge {
+            background: #e2e8f0;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            color: var(--text-muted);
+        }
+        
+        .score-badge {
+            float: right;
+            font-family: monospace;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>RAG PoC v1</h1>
+    </div>
+
+    <div class="controls-panel">
+        <div class="form-group">
+            <label for="docType">Doc Type:</label>
+            <select id="docType">
+                <option value="all">All</option>
+                <option value="pdf">pdf</option>
+                <option value="docx">docx</option>
+            </select>
+
+            <label for="kChunks">Results (k):</label>
+            <input type="number" id="kChunks" value="6" min="1" max="50" style="width: 60px;">
+
+            <label style="margin-left: auto;">
+                <input type="checkbox" id="dryRunToggle"> Dry Run (No LLM)
+            </label>
+        </div>
+
+        <input type="text" id="questionInput" class="question-box" placeholder="Ask a question about the contracts..." autocomplete="off">
+
+        <div class="btn-group">
+            <button id="btnSearch" class="secondary">Search Base Chunks Only</button>
+            <button id="btnAsk">Ask AI for Answer</button>
+        </div>
+    </div>
+
+    <div class="response-area" id="responseArea">
+        <div class="meta-state hidden" id="metaState">
+            <span id="latencyMetric">Latency: - ms</span>
+            <span id="modeLabel">-</span>
+        </div>
+        
+        <div id="errorContainer" class="hidden"></div>
+        <div id="answerContainer" class="hidden answer-block"></div>
+        <div id="citationsContainer" class="hidden"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
