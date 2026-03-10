@@ -4,9 +4,11 @@ import re
 from pathlib import Path
 from typing import List, Dict, Any
 
-from app.db.repo_search import search_chunks
+from app.db.repo_search import search_chunks, search_chunks_keyword
 from app.embedding.embedder import embed_texts
 from app.core.logging import logger
+from app.core.config import settings
+from app.retrieval.search import merge_hybrid_results
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 DEMO_FILE = PROJECT_ROOT / "demo_questions.md"
@@ -32,15 +34,24 @@ def parse_demo_questions() -> List[Dict]:
         return []
 
 def print_debug_table(results: List[Dict]):
-    print(f"\n{'Rank':<5} | {'Score':<6} | {'Dist':<6} | {'Doc Type':<8} | {'File Name':<15} | {'Heading':<20} | {'Section Path':<25} | {'Snippet (First 80 chars)'}")
-    print("-" * 140)
+    print(f"\n{'Rank':<5} | {'Score':<6} | {'Dist':<6} | {'k_score':<7} | {'c_score':<7} | {'Doc Type':<8} | {'File Name':<15} | {'Heading':<20} | {'Section Path':<25} | {'Snippet (First 80 chars)'}")
+    print("-" * 155)
     for i, r in enumerate(results):
-        score = max(0.0, 1.0 - r['distance'])
+        dist = r.get('distance')
+        if dist is not None:
+            score = max(0.0, 1.0 - dist)
+        else:
+            score = r.get('keyword_score', r.get('rank_score', 0.0))
+            
+        c_score = r.get('combined_score', 0.0)
+        k_score = r.get('keyword_score', 0.0)
+        dist_str = f"{dist:<6.3f}" if dist is not None else "N/A   "
+        
         snippet = r['snippet'].replace('\n', ' ')[:80] + "..." if len(r['snippet']) > 80 else r['snippet'].replace('\n', ' ')
-        print(f"{i+1:<5} | {score:<6.3f} | {r['distance']:<6.3f} | {r.get('doc_type', '')[:8]:<8} | {r['file_name'][:15]:<15} | {r['heading'][:20]:<20} | {r['section_path'][:25]:<25} | {snippet}")
+        print(f"{i+1:<5} | {score:<6.3f} | {dist_str} | {k_score:<7.3f} | {c_score:<7.3f} | {r.get('doc_type', '')[:8]:<8} | {r['file_name'][:15]:<15} | {r['heading'][:20]:<20} | {r['section_path'][:25]:<25} | {snippet}")
     print("\n")
 
-def evaluate_question(q_data: Dict, default_k: int, global_doc_type: str = None, debug: bool = False) -> Dict:
+def evaluate_question(q_data: Dict, default_k: int, global_doc_type: str = None, debug: bool = False, mode: str = "vector") -> Dict:
     question = q_data["question"]
     k = q_data.get("k", default_k)
     filters = q_data.get("filters", {})
@@ -53,22 +64,32 @@ def evaluate_question(q_data: Dict, default_k: int, global_doc_type: str = None,
     if not doc_type and global_doc_type and global_doc_type.lower() != "all":
         doc_type = global_doc_type
     
-    # 1. Embed directly
     try:
-        query_vector = embed_texts([question])[0]
+        if mode == "vector":
+            query_vector = embed_texts([question])[0]
+            results = search_chunks(
+                query_vector=query_vector,
+                k=k,
+                doc_type=doc_type
+            )
+        elif mode == "keyword":
+            results = search_chunks_keyword(
+                query_text=question,
+                k=k,
+                doc_type=doc_type
+            )
+            max_rank = max((r["rank_score"] for r in results), default=0.0)
+            for r in results:
+                r["keyword_score"] = r["rank_score"] / max_rank if max_rank > 0 else 0.0
+        elif mode == "hybrid":
+            query_vector = embed_texts([question])[0]
+            v_res = search_chunks(query_vector=query_vector, k=settings.VECTOR_CANDIDATES, doc_type=doc_type)
+            k_res = search_chunks_keyword(query_text=question, k=settings.KEYWORD_CANDIDATES, doc_type=doc_type)
+            results = merge_hybrid_results(v_res, k_res, k=k, alpha=settings.HYBRID_ALPHA)
+        else:
+            results = []
     except Exception as e:
-        logger.error(f"Failed to embed question '{question}': {e}")
-        return {"status": "FAIL", "error": str(e)}
-
-    # 2. Query natively from Postgres Repository
-    try:
-        results = search_chunks(
-            query_vector=query_vector,
-            k=k,
-            doc_type=doc_type
-        )
-    except Exception as e:
-        logger.error(f"DB search failed for '{question}': {e}")
+        logger.error(f"Search failed for '{question}': {e}")
         return {"status": "FAIL", "error": str(e)}
         
     if debug:
@@ -134,6 +155,8 @@ def evaluate_question(q_data: Dict, default_k: int, global_doc_type: str = None,
 
 def run_eval(args):
     """Main evaluation runner"""
+    mode = args.mode or ("hybrid" if settings.HYBRID_ENABLED else "vector")
+        
     if args.debug_question:
         q_data = {
             "id": "DEBUG_1",
@@ -143,7 +166,7 @@ def run_eval(args):
             "heading_hint": "",
             "k": args.k
         }
-        res = evaluate_question(q_data, args.k, global_doc_type=args.doc_type, debug=True)
+        res = evaluate_question(q_data, args.k, global_doc_type=args.doc_type, debug=True, mode=mode)
         print("DEBUG QUESTION RESULT:")
         print(json.dumps(res, indent=2))
         return
@@ -159,7 +182,7 @@ def run_eval(args):
     results_list = []
     
     for q in questions:
-        res = evaluate_question(q, args.k, global_doc_type=args.doc_type, debug=args.debug)
+        res = evaluate_question(q, args.k, global_doc_type=args.doc_type, debug=args.debug, mode=mode)
         results_list.append(res)
         
     # Aggregate Metrics
@@ -174,7 +197,8 @@ def run_eval(args):
         "passed": passed_count,
         "failed": failed_count,
         "pass_rate_percent": round(pass_rate, 2),
-        "k_used": args.k
+        "k_used": args.k,
+        "mode": mode
     }
     
     failures = [r for r in results_list if r["status"] == "FAIL"]
@@ -185,17 +209,18 @@ def run_eval(args):
         "failures": failures
     }
     
-    with open(REPORT_FILE, "w", encoding="utf-8") as f:
+    out_file = PROJECT_ROOT / f"eval_report_{mode}.json"
+    with open(out_file, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
         
     print("\n" + "="*40)
-    print("M8 RETRIEVAL EVALUATION SUMMARY")
+    print(f"M8 RETRIEVAL EVALUATION SUMMARY (Mode: {mode.upper()})")
     print("="*40)
     print(f"Total Questions: {total}")
     print(f"Passed: {passed_count}")
     print(f"Failed: {failed_count}")
     print(f"Pass Rate: {pass_rate:.1f}%")
-    print(f"Report saved to: {REPORT_FILE}")
+    print(f"Report saved to: {out_file}")
     print("="*40 + "\n")
 
 if __name__ == "__main__":
@@ -205,6 +230,7 @@ if __name__ == "__main__":
     parser.add_argument("--debug", action="store_true", help="Print debug top-k tables")
     parser.add_argument("--debug-question", type=str, help="Debug single ad-hoc question")
     parser.add_argument("--doc-type", type=str, help="Filter by document type (pdf, docx)")
+    parser.add_argument("--mode", type=str, choices=["vector", "keyword", "hybrid"], help="Search mode")
     
     args = parser.parse_args()
     run_eval(args)

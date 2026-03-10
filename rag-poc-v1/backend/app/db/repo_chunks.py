@@ -15,8 +15,8 @@ def delete_chunks_for_document(document_id: int):
 
 def insert_chunks(document_id: int, chunks: List[Dict]):
     sql = text("""
-        INSERT INTO chunks (document_id, chunk_index, heading, section_path, chunk_text, token_count)
-        VALUES (:doc_id, :idx, :heading, :section_path, :text, :tokens)
+        INSERT INTO chunks (document_id, chunk_index, heading, section_path, chunk_text, token_count, search_tsv)
+        VALUES (:doc_id, :idx, :heading, :section_path, :text, :tokens, to_tsvector('english', :text))
     """)
     with engine.begin() as conn:
         for idx, chunk in enumerate(chunks):

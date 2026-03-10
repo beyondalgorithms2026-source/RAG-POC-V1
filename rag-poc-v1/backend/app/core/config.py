@@ -30,6 +30,12 @@ class Settings(BaseSettings):
     RERANK_MODEL: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     TOP_K_INITIAL: int = 30
 
+    # Hybrid Retrieval Settings (M10)
+    HYBRID_ENABLED: bool = False
+    HYBRID_ALPHA: float = 0.65
+    KEYWORD_CANDIDATES: int = 30
+    VECTOR_CANDIDATES: int = 30
+
     class Config:
         env_file = ENV_FILE_PATH
         env_file_encoding = "utf-8"

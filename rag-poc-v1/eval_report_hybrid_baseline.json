@@ -1,0 +1,444 @@
+{
+  "summary": {
+    "total": 40,
+    "passed": 37,
+    "failed": 3,
+    "pass_rate_percent": 92.5,
+    "k_used": 6,
+    "mode": "hybrid"
+  },
+  "results": [
+    {
+      "id": "Q01",
+      "question": "What is the maximum length of the agreement term (in months)?",
+      "status": "FAIL",
+      "best_match_rank": null,
+      "matched_keyword": null,
+      "heading_hint": "2.1",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_019.pdf"
+    },
+    {
+      "id": "Q02",
+      "question": "What is the agreement\u2019s Effective Date called and when does the Term commence?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "Effective Date",
+      "heading_hint": "2.1",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_001.pdf"
+    },
+    {
+      "id": "Q03",
+      "question": "What interest rate applies to overdue payment amounts?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "6% per year",
+      "heading_hint": "5.3",
+      "best_retrieved_heading": "5.3 If any of the payments are not received on or before the appropriate dates",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q04",
+      "question": "What license is granted to use the other party\u2019s Marks and Content (key terms like worldwide/non-exclusive)?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "worldwide",
+      "heading_hint": "6.1",
+      "best_retrieved_heading": "6.1 Subject to the terms and conditions of this Agreement, ebix hereby grants",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q05",
+      "question": "Who owns user data generated within the network (user data ownership clause)?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "About User Data",
+      "heading_hint": "9.2",
+      "best_retrieved_heading": "9.2 About shall own and retain all right, title and interest in and to any",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q06",
+      "question": "What uptime percentage is required for a hosted service during the Term?",
+      "status": "FAIL",
+      "best_match_rank": null,
+      "matched_keyword": null,
+      "heading_hint": "13.4",
+      "best_retrieved_heading": "2. UPTIME GUARANTEE",
+      "best_retrieved_file": "cuad_019.pdf"
+    },
+    {
+      "id": "Q07",
+      "question": "Which section covers indemnification and includes 'indemnify' language?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "INDEMNIFICATION",
+      "heading_hint": "11.",
+      "best_retrieved_heading": "12.4 Sole Remedy. Each party agrees that the sole and exclusive remedy",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q08",
+      "question": "Which states are specified for governing law and litigation venue?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "New York",
+      "heading_hint": "15.4",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_004.pdf"
+    },
+    {
+      "id": "Q09",
+      "question": "What does the assignment clause say about needing written consent and assignment to an affiliate/successor?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "assign",
+      "heading_hint": "15.6",
+      "best_retrieved_heading": "13.MISCELLANEOUS:",
+      "best_retrieved_file": "cuad_008.pdf"
+    },
+    {
+      "id": "Q10",
+      "question": "Who hosts the Insurance Center and what wrapper is it contained in?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "About Wrapper",
+      "heading_hint": "3.2",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q11",
+      "question": "What is the Effective Date of the co-branding agreement?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "Effective Date",
+      "heading_hint": "CO-BRANDING",
+      "best_retrieved_heading": "Document Start",
+      "best_retrieved_file": "cuad_017.pdf"
+    },
+    {
+      "id": "Q12",
+      "question": "Which party stores and serves the Gateway Page and where are the servers located?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "store and maintain the Gateway Page",
+      "heading_hint": "1.2",
+      "best_retrieved_heading": "1.2 Women.com shall store and maintain the Gateway Page on, and serve",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q13",
+      "question": "Who has sole responsibility for providing and maintaining the Diet Center beneath the Gateway Page?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "sole responsibility",
+      "heading_hint": "1.3",
+      "best_retrieved_heading": "1.3 Except as set forth in Section 1.2 [Women], eDiets will have sole",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q14",
+      "question": "What clause restricts public statements or press releases about the existence/terms of the agreement?",
+      "status": "PASS",
+      "best_match_rank": 3,
+      "matched_keyword": "public statement",
+      "heading_hint": "4.",
+      "best_retrieved_heading": "3.2 Women.com and eDiets agree that all media metrics (e.g. pageviews",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q15",
+      "question": "What does the privacy clause require regarding consumer data collected from Women.com users?",
+      "status": "PASS",
+      "best_match_rank": 2,
+      "matched_keyword": "Women.com Data",
+      "heading_hint": "8.4",
+      "best_retrieved_heading": "8.4 Privacy. eDiets agrees to treat all consumer data collected from",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q16",
+      "question": "Which sections survive termination according to the Survival clause?",
+      "status": "PASS",
+      "best_match_rank": 3,
+      "matched_keyword": "will survive",
+      "heading_hint": "10.4",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_017.pdf"
+    },
+    {
+      "id": "Q17",
+      "question": "What cure period is given for a material breach before termination is allowed?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "material breach",
+      "heading_hint": "10.2",
+      "best_retrieved_heading": "13.4 The ebix Insurance Center shall be operational and fully functionally at",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q18",
+      "question": "In confidentiality obligations, to whom may confidential information be disclosed (need-to-know restriction)?",
+      "status": "PASS",
+      "best_match_rank": 2,
+      "matched_keyword": "employees, agents and contractors",
+      "heading_hint": "11.4",
+      "best_retrieved_heading": "11.4 Each party agrees (a) that it will disclose such Confidential",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q19",
+      "question": "What is included in the definition of a filled application form (what action completes it)?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "FILLED APPLICATION FORM",
+      "heading_hint": "FILLED APPLICATION FORM",
+      "best_retrieved_heading": "4.4 Pursuant to section 2.1, About shall use commercially reasonable efforts",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q20",
+      "question": "What website URL is explicitly defined as the EBIX SITE?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "HTTP://WWW.EBIX.COM",
+      "heading_hint": "EBIX SITE",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q21",
+      "question": "What are About Guide Site Sub-Pages (definition asks for what pages are included/excluded)?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "About Guide Site Sub-Pages",
+      "heading_hint": "About Guide Site Sub-Pages",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q22",
+      "question": "What is the maximum scheduled downtime allowed per month for maintenance (in hours)?",
+      "status": "PASS",
+      "best_match_rank": 2,
+      "matched_keyword": "one (1) hour",
+      "heading_hint": "13.4",
+      "best_retrieved_heading": "13.4 The ebix Insurance Center shall be operational and fully functionally at",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q23",
+      "question": "After how many business days of non-payment can termination be triggered (per the termination section)?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "business days",
+      "heading_hint": "13.2",
+      "best_retrieved_heading": "ARTICLE V [Payments]",
+      "best_retrieved_file": "cuad_012.pdf"
+    },
+    {
+      "id": "Q24",
+      "question": "What does the assignment clause say about consent not being unreasonably withheld or delayed?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "consent shall not be unreasonably withheld",
+      "heading_hint": "15.6",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_004.pdf"
+    },
+    {
+      "id": "Q25",
+      "question": "Where is a 'LIMITATION OF LIABILITY' section found and what does it generally address?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "LIMITATION OF LI",
+      "heading_hint": "LIMITATION",
+      "best_retrieved_heading": "11. DISCLAIMER OF WARRANTY, LIMITATION OF LIABILITY AND INDEMNIFICATION.",
+      "best_retrieved_file": "cuad_020.pdf"
+    },
+    {
+      "id": "Q26",
+      "question": "Where is a 'DISCLAIMER OF WARRANTIES' section found (look for 'DISCLAIMER OF WA')?",
+      "status": "PASS",
+      "best_match_rank": 2,
+      "matched_keyword": "warranties",
+      "heading_hint": "DISCLAIMER",
+      "best_retrieved_heading": "12.4 Sole Remedy. Each party agrees that the sole and exclusive remedy",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q27",
+      "question": "What does the Ownership section say about eDiets Content ownership (retains rights/copyright)?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "retain all rights",
+      "heading_hint": "8.1",
+      "best_retrieved_heading": "8. OWNERSHIP.",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q28",
+      "question": "What restriction exists on promoting or distributing advertising for a 'Women.com Competitive Company' near the gateway page?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "will not buy, sell, display",
+      "heading_hint": "5.2",
+      "best_retrieved_heading": "3.2 Women.com and eDiets agree that all media metrics (e.g. pageviews",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q29",
+      "question": "How are media metrics allocated for the Gateway Page (pageviews/impressions allocation)?",
+      "status": "FAIL",
+      "best_match_rank": null,
+      "matched_keyword": null,
+      "heading_hint": "3.2",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_004.pdf"
+    },
+    {
+      "id": "Q30",
+      "question": "What is the 'Limited Warranty' article called (look for 'ARTICLE VII' and 'Limited Warranty')?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "ARTICLE VII",
+      "heading_hint": "ARTICLE VII",
+      "best_retrieved_heading": "ARTICLE VII [Limited Warranty]",
+      "best_retrieved_file": "cuad_012.pdf"
+    },
+    {
+      "id": "Q31",
+      "question": "TARGETED DEBUG: In oneNDA.docx, who can the Receiver share confidential information with?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "Permitted Receivers",
+      "heading_hint": "PARTIES AND EXECUTION",
+      "best_retrieved_heading": "PARTIES AND EXECUTION",
+      "best_retrieved_file": "oneNDA.docx"
+    },
+    {
+      "id": "Q32",
+      "question": "TARGETED DEBUG: In oneNDA.docx, how long do obligations last?",
+      "status": "PASS",
+      "best_match_rank": 2,
+      "matched_keyword": "How long do my obligations last",
+      "heading_hint": "PARTIES AND EXECUTION",
+      "best_retrieved_heading": "PARTIES AND EXECUTION",
+      "best_retrieved_file": "oneNDA.docx"
+    },
+    {
+      "id": "Q33",
+      "question": "TARGETED DEBUG: In oneNDA.docx, where is the definition of Confidential Information presented?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "What is Confidential Information",
+      "heading_hint": "TERMS",
+      "best_retrieved_heading": "PARTIES AND EXECUTION",
+      "best_retrieved_file": "oneNDA.docx"
+    },
+    {
+      "id": "Q34",
+      "question": "TARGETED DEBUG: In cuad_013.pdf, what section heading is '14. LIMITATION OF LIABILITY'?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "LIMITATION OF LIABILITY",
+      "heading_hint": "14.",
+      "best_retrieved_heading": "11. DISCLAIMER OF WARRANTY, LIMITATION OF LIABILITY AND INDEMNIFICATION.",
+      "best_retrieved_file": "cuad_020.pdf"
+    },
+    {
+      "id": "Q35",
+      "question": "TARGETED DEBUG: In cuad_014.pdf, which section states confidentiality info is disclosed only to employees/agents/contractors with a need to know?",
+      "status": "PASS",
+      "best_match_rank": 5,
+      "matched_keyword": "employees, agents and contractors",
+      "heading_hint": "11.4",
+      "best_retrieved_heading": "11.4 Each party agrees (a) that it will disclose such Confidential",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q36",
+      "question": "TARGETED DEBUG: In cuad_013.pdf, what does 'FILLED APPLICATION FORM' definition say about clicking Submit?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "FILLED APPLICATION FORM",
+      "heading_hint": "FILLED APPLICATION FORM",
+      "best_retrieved_heading": "4.4 Pursuant to section 2.1, About shall use commercially reasonable efforts",
+      "best_retrieved_file": "cuad_013.pdf"
+    },
+    {
+      "id": "Q37",
+      "question": "What is the term 'Confidential Information' used to describe in a confidentiality section (look for explicit definition)?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "\"Confidential Information\" means",
+      "heading_hint": "CONFIDENTIALITY",
+      "best_retrieved_heading": "18. CONFIDENTIALITY",
+      "best_retrieved_file": "cuad_019.pdf"
+    },
+    {
+      "id": "Q38",
+      "question": "What does a termination clause say about terminating for breach if not cured within a stated number of days?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "terminate",
+      "heading_hint": "Termination",
+      "best_retrieved_heading": "ARTICLE V [Payments]",
+      "best_retrieved_file": "cuad_012.pdf"
+    },
+    {
+      "id": "Q39",
+      "question": "What does an indemnity clause typically require (look for 'indemnify' + 'attorneys' fees')?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "indemnify",
+      "heading_hint": "INDEMN",
+      "best_retrieved_heading": "12.4 Sole Remedy. Each party agrees that the sole and exclusive remedy",
+      "best_retrieved_file": "cuad_014.pdf"
+    },
+    {
+      "id": "Q40",
+      "question": "What does a confidentiality clause say about disclosure to third parties (look for 'will not disclose to any third party')?",
+      "status": "PASS",
+      "best_match_rank": 1,
+      "matched_keyword": "third party",
+      "heading_hint": "Confidential",
+      "best_retrieved_heading": "CONTRACT, NEGLIGENCE,",
+      "best_retrieved_file": "cuad_016.pdf"
+    }
+  ],
+  "failures": [
+    {
+      "id": "Q01",
+      "question": "What is the maximum length of the agreement term (in months)?",
+      "status": "FAIL",
+      "best_match_rank": null,
+      "matched_keyword": null,
+      "heading_hint": "2.1",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_019.pdf"
+    },
+    {
+      "id": "Q06",
+      "question": "What uptime percentage is required for a hosted service during the Term?",
+      "status": "FAIL",
+      "best_match_rank": null,
+      "matched_keyword": null,
+      "heading_hint": "13.4",
+      "best_retrieved_heading": "2. UPTIME GUARANTEE",
+      "best_retrieved_file": "cuad_019.pdf"
+    },
+    {
+      "id": "Q29",
+      "question": "How are media metrics allocated for the Gateway Page (pageviews/impressions allocation)?",
+      "status": "FAIL",
+      "best_match_rank": null,
+      "matched_keyword": null,
+      "heading_hint": "3.2",
+      "best_retrieved_heading": "--- PAGE BREAK ---",
+      "best_retrieved_file": "cuad_004.pdf"
+    }
+  ]
+}

@@ -19,5 +19,6 @@ CREATE TABLE IF NOT EXISTS chunks (
     chunk_text TEXT NOT NULL,
     token_count INT,
     embedding vector(384),
+    search_tsv tsvector,
     created_at TIMESTAMPTZ DEFAULT now()
 );

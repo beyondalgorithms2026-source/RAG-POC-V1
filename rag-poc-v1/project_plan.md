@@ -157,27 +157,83 @@ One function/team: **Legal / Contracts** (best-quality documents; easiest win)
 - [ ] Document known limitations
 **Definition of Done:** Repeatable demo runs smoothly; Simple retrieval accuracy metrics can be shown.
 
-### M8.1 — Corpus expansion (EDGAR contracts) + eval compare (baseline vs rerank)
-**Goal:** Grow corpus fast with real contracts and measure retrieval improvements with/without reranker.
 
-**Dataset (tested source):**
-- Hugging Face dataset: `chenghao/sec-material-contracts-qa` (800+ EDGAR contracts with PDF images + extracted fields).  [oai_citation:2‡huggingface.co](https://huggingface.co/datasets/chenghao/sec-material-contracts-qa?utm_source=chatgpt.com)
-
+### M8.1 — Corpus expansion (public contract PDFs) + re-run pipeline
+**Goal:** Move from toy corpus (1 doc) to realistic multi-doc retrieval behavior.
+**Dataset:** CUAD contract PDFs (public): `theatticusproject/cuad` (Hugging Face).
 **Steps:**
-- [ ] Download a small, deterministic subset of PDFs into `data/contracts/` (e.g., first 20 items or a pinned list)
-- [ ] Run pipeline: ingest → chunk → embed
-- [ ] Run M8 eval twice and save reports:
-  - baseline: `RERANK_ENABLED=false`
-  - rerank: `RERANK_ENABLED=true`
-- [ ] Compare:
-  - pass_rate delta
-  - failures list delta
-  - best_match_rank shifts (where available)
+- [ ] Download deterministic subset (e.g., first 20 PDFs) into `data/contracts/`
+- [ ] Run: ingest → chunk → embed
+- [ ] Confirm chunk count is > 200 (so ranking improvements are measurable)
+**Definition of Done:** At least 10 PDFs successfully ingested and embedded; retrieval results include multiple documents.
 
-**Definition of Done:**
-- At least 10 PDFs added to corpus
-- Two reports exist side-by-side: `eval_report_baseline.json` and `eval_report_rerank.json`
-- README documents exact commands to reproduce the run
+### M9 — Reranker v1 (cross-encoder)
+**Goal:** Improve result ordering after vector retrieval (better precision at top-k).
+**Steps:**
+- [ ] Retrieve top_k_initial (e.g., 30) via pgvector
+- [ ] Rerank with cross-encoder on (question, chunk_text)
+- [ ] Return top_k_final (k)
+**Definition of Done:** gated by flag; measurable improvement in avg best_match_rank on a frozen corpus + ≥30 question set.
+
+### M10 — Hybrid retrieval v1 (Postgres Full-Text Search + pgvector)
+**Goal:** Add keyword ranking (Postgres FTS) + vectors (keyword/BM25-like can be added later not in scope of this project as of now) exact-term retrieval to complement semantic vectors (exact term hits).
+**Approach (implemented):** Postgres full-text search (tsvector + GIN) + vector search, combined.
+**Steps:**
+- [ ] Add `chunks.search_tsv` (tsvector) derived from `chunk_text`
+- [ ] Add GIN index for keyword search
+- [ ] Implement keyword query path (websearch_to_tsquery / plainto_tsquery)
+- [ ] Implement hybrid retrieval: get candidates from keyword + vector → merge → score → sort
+- [ ] Keep reranker optional on top of merged candidates
+**Definition of Done:** `/search` supports mode=keyword and mode=hybrid; hybrid improves exact-term queries on frozen corpus.
+
+### M11 — Evaluation expansion (Option B)
+**Goal:** Make retrieval quality measurable across many clause types.
+**Steps:**
+- [ ] Expand `demo_questions.md` to 30–100 questions (confidentiality, term, termination, liability, indemnity, governing law, notices, assignment, etc.)
+- [ ] Add/adjust keywords_any/keywords_all to reduce false positives
+- [ ] Run eval on a fixed corpus snapshot and store reports
+**Definition of Done:** ≥30 questions + stored JSON report + frozen corpus snapshot file.
+
+### M12 — Baseline vs Reranker Compare ✅ DONE (2026-03-10)
+**Goal:** Quantify whether reranker improves ranking (not just pass/fail).
+**Steps:**
+- [x] Run eval with reranker OFF and ON over the same question set (40 Qs from M11)
+- [x] Compare pass_rate and average best_match_rank deltas
+- [x] Store deterministic JSON reports
+
+**Commands Used:**
+```bash
+cd backend && source venv/bin/activate
+# Hybrid
+RERANK_ENABLED=false python -m app.eval.retrieval_eval --mode hybrid --k 6
+cp ../eval_report_hybrid.json ../eval_report_hybrid_baseline.json
+RERANK_ENABLED=true python -m app.eval.retrieval_eval --mode hybrid --k 6
+cp ../eval_report_hybrid.json ../eval_report_hybrid_rerank.json
+# Vector
+RERANK_ENABLED=false python -m app.eval.retrieval_eval --mode vector --k 6
+cp ../eval_report_vector.json ../eval_report_vector_baseline.json
+RERANK_ENABLED=true python -m app.eval.retrieval_eval --mode vector --k 6
+cp ../eval_report_vector.json ../eval_report_vector_rerank.json
+```
+
+**Results Summary:**
+
+| Mode   | Metric            | Baseline | Rerank | Delta  |
+|--------|-------------------|----------|--------|--------|
+| Hybrid | Pass Rate         | 92.5%    | 92.5%  | +0.0%  |
+| Hybrid | Avg Best Rank     | 1.35     | 1.35   | +0.00  |
+| Hybrid | Improved/Worsened | 0 / 0    | —      | 40 unchanged |
+| Vector | Pass Rate         | 92.5%    | 92.5%  | +0.0%  |
+| Vector | Avg Best Rank     | 1.35     | 1.35   | +0.00  |
+| Vector | Improved/Worsened | 0 / 0    | —      | 40 unchanged |
+
+**Interpretation:** Reranker had zero measurable impact on retrieval quality with k=6 and the current 40-question evaluation set. This suggests the top-6 candidates from vector/hybrid search are already well-ordered for these queries, or the reranker model isn't effectively re-scoring at this retrieval depth.
+
+**Output Artifacts:**
+- `eval_report_hybrid_baseline.json`
+- `eval_report_hybrid_rerank.json`
+- `eval_report_vector_baseline.json`
+- `eval_report_vector_rerank.json`
 
 ## 6) Repo structure
 ```text
@@ -215,9 +271,11 @@ rag-poc-v1/
 ### Tables
 - `documents`: id, file_path, file_name, doc_type, contract_date (optional), sha256_hash
 - `chunks`: id, document_id, chunk_index, heading, section_path, chunk_text, embedding(vector(384))
+- `chunks`: id, document_id, chunk_index, heading, section_path, chunk_text, embedding(vector(384)), search_tsv(tsvector)  # search_tsv added in M10 hybrid
 
 ### Indexing
 - pgvector HNSW or IVFFLAT index on `chunks.embedding`
+- GIN index on `chunks.search_tsv` for keyword search (M10 hybrid)
 - standard indexes on `documents.doc_type`, `documents.contract_date`
 
 ## 9) Demo script (questions to show)
@@ -232,6 +290,8 @@ rag-poc-v1/
 - Messy PDFs can break parsing and heading detection
 - RAG reduces hallucination but retrieval errors still happen if chunking is bad
 - Not designed for heavy concurrency or strict latency guarantees
+- Keyword/BM25 search is limited unless M10 hybrid retrieval is enabled
+
 
 ### Explicit "won't do in v1"
 - Interacting with scanned/image-only PDFs (no OCR for now)
@@ -246,6 +306,8 @@ rag-poc-v1/
 - Reranker (e.g., cross-encoder) for better chunk relevance
 - Better document versioning and deduplication
 - “List matching contracts” mode (extractive listing)
+- Hybrid retrieval (Postgres FTS + vector)  # implemented in M10
+- Alternate hybrid path: Elasticsearch/OpenSearch BM25 (NOT implemented; optional future)
 
 ### v3 Enterprise readiness
 - SSO integration + strict ACL enforcement

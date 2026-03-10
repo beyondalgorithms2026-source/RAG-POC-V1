@@ -12,6 +12,8 @@ class SearchRequest(BaseModel):
     question: str
     k: int = Field(default=10, le=50, description="Number of results to return, max 50")
     filters: Optional[SearchFilters] = None
+    mode: Optional[str] = Field(default=None, description="'vector' | 'keyword' | 'hybrid'")
+    debug: bool = False
 
 class SearchResultItem(BaseModel):
     chunk_id: int
@@ -24,18 +26,23 @@ class SearchResultItem(BaseModel):
     section_path: str
     snippet: str
     score: float
-    distance: float
+    distance: Optional[float] = None
     rerank_score: Optional[float] = None
+    vector_score: Optional[float] = None
+    keyword_score: Optional[float] = None
+    combined_score: Optional[float] = None
+    rank_score: Optional[float] = None
 
 class SearchResponse(BaseModel):
     results: List[SearchResultItem]
     latency_ms: int
+    mode: str
 
 from fastapi import APIRouter
-from app.retrieval.search import perform_search
 
 router = APIRouter()
 
 @router.post("/search", response_model=SearchResponse)
 def search_endpoint(request: SearchRequest):
+    from app.retrieval.search import perform_search
     return perform_search(request)

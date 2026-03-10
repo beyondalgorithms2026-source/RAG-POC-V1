@@ -20,6 +20,11 @@ def run_migrations():
     logger.info("Applying patch migrations...")
     with engine.begin() as conn:
         conn.execute(text("ALTER TABLE documents ADD COLUMN IF NOT EXISTS chunked_hash_sha256 TEXT;"))
+        
+        # M10 Hybrid Retrieval Patch
+        conn.execute(text("ALTER TABLE chunks ADD COLUMN IF NOT EXISTS search_tsv tsvector;"))
+        conn.execute(text("UPDATE chunks SET search_tsv = to_tsvector('english', chunk_text) WHERE search_tsv IS NULL;"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS chunks_search_tsv_gin ON chunks USING gin(search_tsv);"))
     logger.info("Patch migrations completed.")
 
     with engine.begin() as conn:
